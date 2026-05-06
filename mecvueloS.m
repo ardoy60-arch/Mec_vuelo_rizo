@@ -187,7 +187,8 @@ fprintf('\n');
 
 CD_req = CD0 + k * CL_req.^2;
 D_req  = q * S * CD_req;
-T_req  = D_req + (W * sin(phi)).*curv;
+sin_gamma = abs(sin(phi)); 
+T_req = D_req + W * sin_gamma; 
 
 Ps     = V * (T_max - T_req) / W;   % [m/s]  Potencia de exceso específica
 
@@ -343,9 +344,9 @@ text(x_tray(end)+20,         z_tray(end)+40,        'C','Color',[0 0.6 0],'FontW
 % Separador entre AB y BC
 xline(0,'k--','LineWidth',0.8,'HandleVisibility','off');
 
-annotation('textbox',[0.13 0.01 0.75 0.05], ...
-    'String','x(\phi)=R\cdot\sin\phi   |   Tramo AB: z=-R\cos\phi   |   Tramo BC: z=R\cos\phi+2R', ...
-    'FitBoxToText','off','EdgeColor','none','FontSize',8,'Interpreter','tex');
+%annotation('textbox',[0.13 0.01 0.75 0.05], ...
+ %   'String','x(\phi)=R\cdot\sin\phi   |   Tramo AB: z=-R\cos\phi   |   Tramo BC: z=R\cos\phi+2R', ...
+  %  'FitBoxToText','off','EdgeColor','none','FontSize',8,'Interpreter','tex');
 
 axis equal; grid on;
 xlabel('x [m]'); ylabel('z [m]');
