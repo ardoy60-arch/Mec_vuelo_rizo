@@ -612,7 +612,7 @@ V_vector = 20:1:232; % Rango hasta la Vne del C-101EB
 
 % 1. Definiciones de empuje
 T_jet_S = 15800 * ones(size(V_vector)); % Empuje constante del turborreactor
-P_ref_S = 15800 * 70;                   % Potencia de referencia (igualados a 70 m/s)
+P_ref_S = 15800 * 140;                   % Potencia de referencia (igualados a 70 m/s)
 T_helice_S = P_ref_S ./ V_vector;       % Empuje del motor de hélice (T = P/V)
 
 % 2. DEFINICIÓN DE VARIABLES PARA EL PUNTO DE ENSAYO
@@ -642,4 +642,4 @@ grid on;
 xlabel('Velocidad de vuelo V [m/s]');
 ylabel('Empuje Disponible T [kN]');
 title('Comparativa de Actuaciones: Turborreactor vs Hélice (Maniobra en S)');
-axis([20 232 0 45]);
+axis([80 232 0 45]);

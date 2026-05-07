@@ -548,7 +548,7 @@ V_vector = 20:1:232;
 
 % 1. Definiciones de empuje
 T_jet_rizo = 15800 * ones(size(V_vector)); 
-P_ref_rizo = 15800 * 70; 
+P_ref_rizo = 15800 * 120; 
 T_helice_rizo = P_ref_rizo ./ V_vector;
 
 % 2. defino la variable para el punto 
@@ -576,4 +576,4 @@ grid on;
 xlabel('Velocidad de vuelo V [m/s]');
 ylabel('Empuje Disponible T [kN]');
 title('Comparativa de Actuaciones: Turborreactor vs Hélice (Rizo)');
-axis([20 232 0 45]);
+axis([50 232 0 45]);
