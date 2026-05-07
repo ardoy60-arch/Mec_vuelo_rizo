@@ -510,11 +510,11 @@ ylim([n_min - 1.5, n_max + 1.5]);
 indices_deficit = find(T_req > T_max);
 
 if ~isempty(indices_deficit)
-    % 2. Identificar el primer y último ángulo (puntos de corte)
+    % 2.identificar ángulos
     phi_inicio_def = phi_deg(indices_deficit(1));
     phi_fin_def    = phi_deg(indices_deficit(end));
 
-    % 3. Mostrar resultados en la ventana de comandos
+    % 3.resultados 
     fprintf('=== ANÁLISIS DE INTERSECCIÓN T_req / T_max ===\n');
     fprintf('  Inicio del déficit propulsivo: %.1f°\n', phi_inicio_def);
     fprintf('  Fin del déficit propulsivo:    %.1f°\n', phi_fin_def);
@@ -524,16 +524,16 @@ else
 end
 %% --- CÁLCULO DEL PUNTO DE DÉFICIT MÁXIMO ---
 
-% 1. Calculamos el vector de déficit 
+% 1. Para calcular el verctor de déficit 
 deficit_vector = T_req - T_max;
 
-% 2. Encontramos el valor máximo y su posición (índice)
+% 2. Encontramos el valor máximo y su posición 
 [max_deficit, idx_max] = max(deficit_vector);
 
-% 3. Obtenemos el ángulo en el que ocurre
+% 3. Ángulo en el que se obtiene
 phi_max_deficit = phi_deg(idx_max);
 
-% 4. Mostrar resultados
+% 4. Resultados
 if max_deficit > 0
     fprintf('=== ANÁLISIS DEL PUNTO CRÍTICO (DÉFICIT MÁXIMO) ===\n');
     fprintf('  Déficit máximo de empuje: %.0f N\n', max_deficit);
@@ -542,3 +542,38 @@ if max_deficit > 0
 else
     fprintf('No hay déficit máximo que calcular (T_req < T_max en todo el vuelo).\n\n');
 end
+
+%% --- GRÁFICA PUNTO EXTRA: COMPARATIVA PROPULSIVA (RIZO) ---
+V_vector = 20:1:232; 
+
+% 1. Definiciones de empuje
+T_jet_rizo = 15800 * ones(size(V_vector)); 
+P_ref_rizo = 15800 * 70; 
+T_helice_rizo = P_ref_rizo ./ V_vector;
+
+% 2. defino la variable para el punto 
+V_rizo = 120; 
+T_rizo_helice = (P_ref_rizo / V_rizo) / 1000;
+
+% --- Generar la Figura ---
+figure('Name', 'Analisis Propulsivo Punto Extra - Rizo');
+plot(V_vector, T_jet_rizo/1000, 'r-', 'LineWidth', 2.5, 'DisplayName', 'Turborreactor'); hold on;
+plot(V_vector, T_helice_rizo/1000, 'b--', 'LineWidth', 2.5, 'DisplayName', 'Motor hélice');
+
+% Se resalta el punto de ensayo 
+plot(V_rizo, T_rizo_helice, 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 8, 'DisplayName', 'Punto de Ensayo (120 m/s)');
+
+% Línea vertical que marca los 120 m/s
+xline(V_rizo, ':', ['Ensayo Rizo: ', num2str(V_rizo), ' m/s'], ...
+    'Color', [0.7 0.7 0.7], ... 
+    'LineWidth', 1, ...
+    'LabelVerticalAlignment', 'top', ...
+    'HandleVisibility', 'off'); 
+
+% --- Configuración final ---
+legend('Location', 'northeast');
+grid on;
+xlabel('Velocidad de vuelo V [m/s]');
+ylabel('Empuje Disponible T [kN]');
+title('Comparativa de Actuaciones: Turborreactor vs Hélice (Rizo)');
+axis([20 232 0 45]);

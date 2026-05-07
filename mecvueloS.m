@@ -585,3 +585,61 @@ title(sprintf('Sensibilidad del factor de carga al radio  (V = %.0f m/s)', V), .
       'FontWeight','bold');
 xlim([0 360]); xticks(0:45:360);
 text(185, n_max*0.92, '\leftarrow B (phi=180°)', 'FontSize', 9, 'Color', [0.3 0.3 0.3]);
+
+%% --- COMPARATIVA PUNTO EXTRA: TURBORREACTOR VS HÉLICE ---
+% 1. Definimos el motor de hélice equivalente
+% Suponemos que a baja velocidad (V = 70 m/s) ambos motores dan el mismo empuje
+V_ref = 70; 
+Potencia_disponible = T_max * V_ref; % Potencia constante [W]
+
+% 2. Calculamos el empuje de la hélice a nuestra velocidad de ensayo (140 m/s)
+T_disponible_helice = Potencia_disponible / V; 
+
+% 3. Mostramos la comparativa 
+fprintf('\n=== ANÁLISIS PROPULSIVO: PUNTO EXTRA ===\n');
+fprintf('Velocidad de la maniobra en S: %.0f m/s\n', V);
+fprintf('Empuje disponible (TURBORREACTOR): %.0f N\n', T_max);
+fprintf('Empuje disponible (HÉLICE):        %.0f N\n', T_disponible_helice);
+
+% 4. Conclusión automática
+if T_disponible_helice < T_max
+    deficit_extra = T_max - T_disponible_helice;
+    fprintf('Resultado: El motor de hélice pierde %.0f N de empuje por el efecto de la velocidad.\n', deficit_extra);
+    fprintf('Conclusión: La maniobra es mucho más difícil de sostener con hélice.\n');
+end
+%% --- GRÁFICA PUNTO EXTRA: COMPARATIVA PROPULSIVA (MANIOBRA EN S) ---
+V_vector = 20:1:232; % Rango hasta la Vne del C-101EB
+
+% 1. Definiciones de empuje
+T_jet_S = 15800 * ones(size(V_vector)); % Empuje constante del turborreactor
+P_ref_S = 15800 * 70;                   % Potencia de referencia (igualados a 70 m/s)
+T_helice_S = P_ref_S ./ V_vector;       % Empuje del motor de hélice (T = P/V)
+
+% 2. DEFINICIÓN DE VARIABLES PARA EL PUNTO DE ENSAYO
+V_S = 140; 
+T_S_helice = (P_ref_S / V_S) / 1000; % Empuje en kN para la gráfica
+
+% --- Generar la Figura ---
+figure('Name', 'Analisis Propulsivo Punto Extra - Maniobra S');
+% Curva Roja: Jet
+plot(V_vector, T_jet_S/1000, 'r-', 'LineWidth', 2.5, 'DisplayName', 'Turborreactor'); hold on;
+% Curva Azul: Hélice
+plot(V_vector, T_helice_S/1000, 'b--', 'LineWidth', 2.5, 'DisplayName', 'Motor hélice');
+
+% Punto Amarillo de Ensayo (140 m/s)
+plot(V_S, T_S_helice, 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 8, 'DisplayName', ['Punto de Ensayo (', num2str(V_S), ' m/s)']);
+
+% Línea vertical que marca 140 m/s
+xline(V_S, ':', ['Ensayo S: ', num2str(V_S), ' m/s'], ...
+    'Color', [0.7 0.7 0.7], ... 
+    'LineWidth', 1, ...
+    'LabelVerticalAlignment', 'top', ...
+    'HandleVisibility', 'off'); % Esto elimina el "data1" de la leyenda
+
+% --- Leyenda y ejes ---
+legend('Location', 'northeast');
+grid on;
+xlabel('Velocidad de vuelo V [m/s]');
+ylabel('Empuje Disponible T [kN]');
+title('Comparativa de Actuaciones: Turborreactor vs Hélice (Maniobra en S)');
+axis([20 232 0 45]);
